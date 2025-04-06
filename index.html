@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Gestión de Usuarios</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f7fa;
+      color: #333;
+    }
+    .auth-container {
+      max-width: 500px;
+      margin: 50px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .dashboard {
+      display: none;
+    }
+    h1, h2 {
+      color: #2c3e50;
+      text-align: center;
+    }
+    h2 {
+      margin-top: 0;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    button.danger {
+      background-color: #e74c3c;
+    }
+    button.danger:hover {
+      background-color: #c0392b;
+    }
+    button.success {
+      background-color: #2ecc71;
+    }
+    button.success:hover {
+      background-color: #27ae60;
+    }
+    .message {
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 5px;
+      display: none;
+    }
+    .success {
+      background-color: #d5f5e3;
+      color: #27ae60;
+      border-left: 4px solid #27ae60;
+    }
+    .error {
+      background-color: #fadbd8;
+      color: #e74c3c;
+      border-left: 4px solid #e74c3c;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      background: white;
+      box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+    }
+    th, td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background-color: #3498db;
+      color: white;
+      font-weight: bold;
+    }
+    tr:hover {
+      background-color: #f5f5f5;
+    }
+    .action-buttons {
+      display: flex;
+      gap: 5px;
+    }
+    .action-buttons button {
+      padding: 8px 12px;
+      font-size: 14px;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+    }
+    .modal-content {
+      background-color: white;
+      margin: 10% auto;
+      padding: 20px;
+      border-radius: 8px;
+      width: 50%;
+      max-width: 500px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .close:hover {
+      color: black;
+    }
+    .user-type-admin {
+      color: #e67e22;
+      font-weight: bold;
+    }
+    .user-type-superadmin {
+      color: #9b59b6;
+      font-weight: bold;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    .logout-btn {
+      width: auto;
+      padding: 8px 15px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Authentication Section -->
+  <div id="authSection" class="auth-container">
+    <div id="loginForm">
+      <h1>Iniciar Sesión</h1>
+      <input type="number" id="loginIdentificacion" placeholder="Identificación" required>
+      <input type="password" id="loginPassword" placeholder="Contraseña" required>
+      <button id="loginBtn">Ingresar</button>
+      <p>¿No tienes cuenta? <a href="#" id="showRegister">Regístrate aquí</a></p>
+      <div id="loginMessage" class="message"></div>
+    </div>
+
+    <div id="registerForm" style="display: none;">
+      <h1>Registro</h1>
+      <input type="number" id="regIdentificacion" placeholder="Identificación" required>
+      <input type="text" id="regNombre" placeholder="Nombre completo" required>
+      <input type="email" id="regEmail" placeholder="Email" required>
+      <input type="password" id="regPassword" placeholder="Contraseña" required>
+      <select id="regTipoUsuario" required>
+        <option value="">Selecciona tipo de usuario</option>
+        <option value="normal">Usuario Normal</option>
+        <option value="admin">Administrador</option>
+        <option value="superadmin">Super Administrador</option>
+      </select>
+      <button type="button" id="registerBtn">Registrarse</button>
+      <p>¿Ya tienes cuenta? <a href="#" id="showLogin">Inicia sesión aquí</a></p>
+      <div id="registerMessage" class="message"></div>
+    </div>
+  </div>
+
+  <!-- Dashboard Section -->
+  <div id="dashboard" class="dashboard">
+    <div class="header">
+      <h1>Panel de Gestión de Usuarios</h1>
+      <button id="logoutBtn" class="logout-btn">Cerrar Sesión</button>
+    </div>
+    
+    <div id="userManagement">
+      <h2>Lista de Usuarios</h2>
+      <button id="addUserBtn" class="success">Agregar Nuevo Usuario</button>
+      <div id="usersMessage" class="message"></div>
+      <table id="usersTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Identificación</th>
+            <th>Nombre Completo</th>
+            <th>Email</th>
+            <th>Tipo de Usuario</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="usersTableBody">
+          <!-- Users will be loaded here -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Add/Edit User Modal -->
+  <div id="userModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2 id="modalTitle">Agregar Nuevo Usuario</h2>
+      <input type="hidden" id="editUserId">
+      <input type="number" id="modalIdentificacion" placeholder="Identificación" required>
+      <input type="text" id="modalNombre" placeholder="Nombre completo" required>
+      <input type="email" id="modalEmail" placeholder="Email" required>
+      <input type="password" id="modalPassword" placeholder="Contraseña (dejar en blanco para no cambiar)">
+      <select id="modalTipoUsuario" required>
+        <option value="">Selecciona tipo de usuario</option>
+        <option value="normal">Usuario Normal</option>
+        <option value="admin">Administrador</option>
+        <option value="superadmin">Super Administrador</option>
+      </select>
+      <button type="button" id="saveUserBtn" class="success">Guardar Usuario</button>
+      <div id="modalMessage" class="message"></div>
+    </div>
+  </div>
+
+  <script>
+    // Configuration
+    const SUPABASE_URL = 'https://ptquukigajsgnuvhefwe.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0cXV1a2lnYWpzZ251dmhlZndlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMyNjQzNTgsImV4cCI6MjA1ODg0MDM1OH0.r38AqnrfsPddbtxQTKR2brNZu3ZApraqc2_ujBJO_0s';
+    
+    // DOM Elements
+    const authSection = document.getElementById('authSection');
+    const dashboard = document.getElementById('dashboard');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const loginMessage = document.getElementById('loginMessage');
+    const registerMessage = document.getElementById('registerMessage');
+    const usersTableBody = document.getElementById('usersTableBody');
+    const userModal = document.getElementById('userModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalMessage = document.getElementById('modalMessage');
+    const usersMessage = document.getElementById('usersMessage');
+    
+    // Current user info
+    let currentUser = null;
+
+    // Initialize the application
+    document.addEventListener('DOMContentLoaded', () => {
+      // Check if user is already logged in
+      const storedUser = localStorage.getItem('currentUser');
+      if (storedUser) {
+        currentUser = JSON.parse(storedUser);
+        showDashboard();
+        loadUsers();
+      }
+    });
+
+    // Auth form toggling
+    document.getElementById('showRegister').addEventListener('click', (e) => {
+      e.preventDefault();
+      loginForm.style.display = 'none';
+      registerForm.style.display = 'block';
+    });
+
+    document.getElementById('showLogin').addEventListener('click', (e) => {
+      e.preventDefault();
+      registerForm.style.display = 'none';
+      loginForm.style.display = 'block';
+    });
+
+    // Login function
+    document.getElementById('loginBtn').addEventListener('click', async () => {
+      const identificacion = document.getElementById('loginIdentificacion').value;
+      const password = document.getElementById('loginPassword').value;
+
+      try {
+        const user = await getUserDataByIdentification(identificacion);
+
+        if (user.clave_encriptada === password) {
+          currentUser = user;
+          localStorage.setItem('currentUser', JSON.stringify(user));
+          showDashboard();
+          loadUsers();
+        } else {
+          throw new Error('Contraseña incorrecta');
+        }
+      } catch (error) {
+        showMessage(loginMessage, error.message, 'error');
+      }
+    });
+
+    // Register function
+    document.getElementById('registerBtn').addEventListener('click', async () => {
+      const userData = {
+        identificacion: document.getElementById('regIdentificacion').value,
+        nombre_usuario: document.getElementById('regNombre').value,
+        email: document.getElementById('regEmail').value,
+        clave_encriptada: document.getElementById('regPassword').value,
+        usuario_normal: document.getElementById('regTipoUsuario').value === 'normal' ? 1 : 0,
+        usuario_administrador: document.getElementById('regTipoUsuario').value === 'admin' ? 1 : 0,
+        usuario_superadministrador: document.getElementById('regTipoUsuario').value === 'superadmin' ? 1 : 0
+      };
+
+      try {
+        const newUser = await registerUser(userData);
+        showMessage(registerMessage, '¡Registro exitoso! Ahora puedes iniciar sesión.', 'success');
+        document.getElementById('registerForm').reset();
+        registerForm.style.display = 'none';
+        loginForm.style.display = 'block';
+      } catch (error) {
+        showMessage(registerMessage, error.message, 'error');
+      }
+    });
+
+    // Logout function
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      currentUser = null;
+      localStorage.removeItem('currentUser');
+      dashboard.style.display = 'none';
+      authSection.style.display = 'block';
+      loginForm.style.display = 'block';
+      registerForm.style.display = 'none';
+      document.getElementById('loginForm').reset();
+    });
+
+    // Load all users
+    async function loadUsers() {
+      try {
+        const users = await getAllUsers();
+        renderUsersTable(users);
+      } catch (error) {
+        showMessage(usersMessage, error.message, 'error');
+      }
+    }
+
+    // Add new user button
+    document.getElementById('addUserBtn').addEventListener('click', () => {
+      showUserModal();
+    });
+
+    // Modal handling
+    document.querySelector('.close').addEventListener('click', () => {
+      userModal.style.display = 'none';
+    });
+
+    window.addEventListener('click', (event) => {
+      if (event.target === userModal) {
+        userModal.style.display = 'none';
+      }
+    });
+
+    // Save user (add/edit)
+    document.getElementById('saveUserBtn').addEventListener('click', async () => {
+      const userId = document.getElementById('editUserId').value;
+      const userData = {
+        identificacion: document.getElementById('modalIdentificacion').value,
+        nombre_usuario: document.getElementById('modalNombre').value,
+        email: document.getElementById('modalEmail').value,
+        usuario_normal: document.getElementById('modalTipoUsuario').value === 'normal' ? 1 : 0,
+        usuario_administrador: document.getElementById('modalTipoUsuario').value === 'admin' ? 1 : 0,
+        usuario_superadministrador: document.getElementById('modalTipoUsuario').value === 'superadmin' ? 1 : 0
+      };
+
+      // Only include password if it's being changed (edit) or for new users
+      const password = document.getElementById('modalPassword').value;
+      if (password || !userId) {
+        userData.clave_encriptada = password;
+      }
+
+      try {
+        if (userId) {
+          await updateUser(userId, userData);
+          showMessage(usersMessage, 'Usuario actualizado correctamente', 'success');
+        } else {
+          await registerUser(userData);
+          showMessage(usersMessage, 'Usuario creado correctamente', 'success');
+        }
+        userModal.style.display = 'none';
+        loadUsers();
+      } catch (error) {
+        showMessage(modalMessage, error.message, 'error');
+      }
+    });
+
+    // Helper function to show user modal for editing
+    function showUserModal(user = null) {
+      document.getElementById('modalTitle').textContent = user ? 'Editar Usuario' : 'Agregar Nuevo Usuario';
+      document.getElementById('editUserId').value = user ? user.id_usuario : '';
+      document.getElementById('modalIdentificacion').value = user ? user.identificacion : '';
+      document.getElementById('modalNombre').value = user ? user.nombre_usuario : '';
+      document.getElementById('modalEmail').value = user ? user.email : '';
+      document.getElementById('modalPassword').value = '';
+      
+      // Set user type
+      const typeSelect = document.getElementById('modalTipoUsuario');
+      typeSelect.value = '';
+      if (user) {
+        if (user.usuario_superadministrador) typeSelect.value = 'superadmin';
+        else if (user.usuario_administrador) typeSelect.value = 'admin';
+        else if (user.usuario_normal) typeSelect.value = 'normal';
+      }
+      
+      modalMessage.style.display = 'none';
+      userModal.style.display = 'block';
+    }
+
+    // Render users table
+    function renderUsersTable(users) {
+      usersTableBody.innerHTML = '';
+      
+      users.forEach(user => {
+        const row = document.createElement('tr');
+        
+        // Determine user type
+        let userType = 'Normal';
+        let typeClass = '';
+        if (user.usuario_superadministrador) {
+          userType = 'Super Admin';
+          typeClass = 'user-type-superadmin';
+        } else if (user.usuario_administrador) {
+          userType = 'Admin';
+          typeClass = 'user-type-admin';
+        }
+        
+        row.innerHTML = `
+          <td>${user.id_usuario}</td>
+          <td>${user.identificacion}</td>
+          <td>${user.nombre_usuario}</td>
+          <td>${user.email}</td>
+          <td class="${typeClass}">${userType}</td>
+          <td class="action-buttons">
+            <button class="edit-btn" data-id="${user.id_usuario}">Editar</button>
+            <button class="danger delete-btn" data-id="${user.id_usuario}">Eliminar</button>
+          </td>
+        `;
+        
+        usersTableBody.appendChild(row);
+      });
+      
+      // Add event listeners to edit and delete buttons
+      document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          const userId = e.target.getAttribute('data-id');
+          try {
+            const user = await getUserById(userId);
+            showUserModal(user);
+          } catch (error) {
+            showMessage(usersMessage, error.message, 'error');
+          }
+        });
+      });
+      
+      document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          if (confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
+            const userId = e.target.getAttribute('data-id');
+            try {
+              await deleteUser(userId);
+              showMessage(usersMessage, 'Usuario eliminado correctamente', 'success');
+              loadUsers();
+            } catch (error) {
+              showMessage(usersMessage, error.message, 'error');
+            }
+          }
+        });
+      });
+    }
+
+    // Show dashboard
+    function showDashboard() {
+      authSection.style.display = 'none';
+      dashboard.style.display = 'block';
+      document.title = `Panel de Usuario - ${currentUser.nombre_usuario}`;
+    }
+
+    // Show message
+    function showMessage(element, message, type) {
+      element.textContent = message;
+      element.className = `message ${type}`;
+      element.style.display = 'block';
+      setTimeout(() => element.style.display = 'none', 5000);
+    }
+
+    // API Functions
+    async function getUserDataByIdentification(identificacion) {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/usuarios?identificacion=eq.${identificacion}`, {
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+        }
+      });
+
+      const data = await response.json();
+
+      if (data.length === 0) {
+        throw new Error('Usuario no encontrado');
+      }
+
+      return data[0];
+    }
+
+    async function registerUser(userData) {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/usuarios`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=representation'
+        },
+        body: JSON.stringify([userData])
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Error al registrar el usuario');
+      }
+
+      return data[0];
+    }
+
+    async function getAllUsers() {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/usuarios?select=*`, {
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+        }
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Error al obtener los usuarios');
+      }
+
+      return data;
+    }
+
+    async function getUserById(userId) {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/usuarios?id_usuario=eq.${userId}`, {
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+        }
+      });
+
+      const data = await response.json();
+
+      if (data.length === 0) {
+        throw new Error('Usuario no encontrado');
+      }
+
+      return data[0];
+    }
+
+    async function updateUser(userId, userData) {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/usuarios?id_usuario=eq.${userId}`, {
+        method: 'PATCH',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=representation'
+        },
+        body: JSON.stringify(userData)
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Error al actualizar el usuario');
+      }
+
+      return data[0];
+    }
+
+    async function deleteUser(userId) {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/usuarios?id_usuario=eq.${userId}`, {
+        method: 'DELETE',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+        }
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Error al eliminar el usuario');
+      }
+    }
+  </script>
+</body>
+</html>
