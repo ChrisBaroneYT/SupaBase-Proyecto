@@ -1,10 +1,5 @@
 # User Management System with Supabase
 
-<div align="center">
-  <img src="https://supabase.com/_next/image?url=%2Fimages%2Fproduct%2Fsupabase-logo-wordmark--dark.png&w=3840&q=75" width="400" alt="Supabase Logo">
-  <br><br>
-</div>
-
 A complete user management system with authentication via ID number and role-based access control.
 
 ## ✨ Features
