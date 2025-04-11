@@ -242,9 +242,9 @@
 
   <script>
     // Configuration
-    const SUPABASE_URL = 'https://ptquukigajsgnuvhefwe.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0cXV1a2lnYWpzZ251dmhlZndlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMyNjQzNTgsImV4cCI6MjA1ODg0MDM1OH0.r38AqnrfsPddbtxQTKR2brNZu3ZApraqc2_ujBJO_0s';
-    
+    const SUPABASE_URL = 'https://shvkkhtmdzrsaitoxvuo.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNodmtraHRtZHpyc2FpdG94dnVvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQzODE0MDEsImV4cCI6MjA1OTk1NzQwMX0.SFqSZsoX4YfRjOOdNLqrqqHgrY01bLS7iwuH9iWfnNo';
+
     // DOM Elements
     const authSection = document.getElementById('authSection');
     const dashboard = document.getElementById('dashboard');
@@ -307,27 +307,59 @@
     });
 
     // Register function
-    document.getElementById('registerBtn').addEventListener('click', async () => {
-      const userData = {
-        identificacion: document.getElementById('regIdentificacion').value,
-        nombre_usuario: document.getElementById('regNombre').value,
-        email: document.getElementById('regEmail').value,
-        clave_encriptada: document.getElementById('regPassword').value,
-        usuario_normal: document.getElementById('regTipoUsuario').value === 'normal' ? 1 : 0,
-        usuario_administrador: document.getElementById('regTipoUsuario').value === 'admin' ? 1 : 0,
-        usuario_superadministrador: document.getElementById('regTipoUsuario').value === 'superadmin' ? 1 : 0
-      };
+  document.getElementById('registerBtn').addEventListener('click', async () => {
+  const identificacion = document.getElementById('regIdentificacion').value.trim();
+  const nombre = document.getElementById('regNombre').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const password = document.getElementById('regPassword').value.trim();
+  const tipoUsuario = document.getElementById('regTipoUsuario').value;
 
-      try {
-        const newUser = await registerUser(userData);
-        showMessage(registerMessage, '¡Registro exitoso! Ahora puedes iniciar sesión.', 'success');
-        document.getElementById('registerForm').reset();
-        registerForm.style.display = 'none';
-        loginForm.style.display = 'block';
-      } catch (error) {
-        showMessage(registerMessage, error.message, 'error');
-      }
-    });
+  // Validaciones
+  const nombreValido = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(nombre);
+  const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  if (!nombreValido) {
+    showMessage(registerMessage, 'El nombre solo debe contener letras y espacios.', 'error');
+    return;
+  }
+
+  if (!emailValido) {
+    showMessage(registerMessage, 'Por favor ingresa un correo electrónico válido.', 'error');
+    return;
+  }
+
+  if (!identificacion || !nombre || !email || !password || !tipoUsuario) {
+    showMessage(registerMessage, 'Todos los campos son obligatorios.', 'error');
+    return;
+  }
+
+  const userData = {
+    identificacion,
+    nombre_usuario: nombre,
+    email,
+    clave_encriptada: password,
+    usuario_normal: tipoUsuario === 'normal' ? 1 : 0,
+    usuario_administrador: tipoUsuario === 'admin' ? 1 : 0,
+    usuario_superadministrador: tipoUsuario === 'superadmin' ? 1 : 0
+  };
+
+  try {
+    const newUser = await registerUser(userData);
+    showMessage(registerMessage, '¡Registro exitoso! Ahora puedes iniciar sesión.', 'success');
+
+    // Limpiar campos
+    document.getElementById('regIdentificacion').value = '';
+    document.getElementById('regNombre').value = '';
+    document.getElementById('regEmail').value = '';
+    document.getElementById('regPassword').value = '';
+    document.getElementById('regTipoUsuario').value = '';
+
+    registerForm.style.display = 'none';
+    loginForm.style.display = 'block';
+  } catch (error) {
+    showMessage(registerMessage, error.message, 'error');
+  }
+});
 
     // Logout function
     document.getElementById('logoutBtn').addEventListener('click', () => {
