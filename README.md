@@ -66,8 +66,6 @@ TO authenticated
 USING (true);
   ```
 
-Important: For production environments, implement more restrictive security policies tailored to your requirements.
-
 Connect to Your Supabase Project
 Update these values in index.html:
    ```bash
@@ -86,8 +84,7 @@ user-management-system/
   ```
 
 ### 🤝 How to Contribute
-
-📬 Contact Information
-Developer: Cristian Sánchez
-Email: [co.cristiand@gmail.com]
-GitHub: [https://github.com/ChrisBaroneYT]
+📬 Contact Information:
+:Developer: Cristian Sánchez
+:Email: [co.cristiand@gmail.com]
+:GitHub: [https://github.com/ChrisBaroneYT]
