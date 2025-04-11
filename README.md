@@ -85,6 +85,6 @@ user-management-system/
 
 ### 🤝 How to Contribute
 📬 Contact Information:
-:Developer: Cristian Sánchez
-:Email: [co.cristiand@gmail.com]
-:GitHub: [https://github.com/ChrisBaroneYT]
+1. Developer: Cristian Sánchez
+2. Email: [co.cristiand@gmail.com]
+3 .GitHub: [https://github.com/ChrisBaroneYT]
