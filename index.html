@@ -5,158 +5,499 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sistema de Gestión de Usuarios</title>
   <style>
+    :root {
+      --primary-color: #3498db;
+      --primary-hover: #2980b9;
+      --success-color: #2ecc71;
+      --success-hover: #27ae60;
+      --danger-color: #e74c3c;
+      --danger-hover: #c0392b;
+      --warning-color: #f39c12;
+      --warning-hover: #e67e22;
+      --admin-color: #e67e22;
+      --superadmin-color: #9b59b6;
+      --text-color: #2c3e50;
+      --light-gray: #f5f7fa;
+      --medium-gray: #ecf0f1;
+      --border-color: #ddd;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --border-radius: 8px;
+      --transition: all 0.3s ease;
+    }
+    
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: var(--light-gray);
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+    
+    .container {
+      width: 100%;
       max-width: 1200px;
       margin: 0 auto;
-      padding: 20px;
-      background-color: #f5f7fa;
-      color: #333;
+      padding: 0 15px;
+      box-sizing: border-box;
     }
+    
     .auth-container {
       max-width: 500px;
       margin: 50px auto;
       background: white;
       padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
     }
+    
     .dashboard {
       display: none;
     }
-    h1, h2 {
-      color: #2c3e50;
-      text-align: center;
-    }
-    h2 {
+    
+    h1, h2, h3 {
+      color: var(--text-color);
       margin-top: 0;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #eee;
     }
+    
+    h1 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    h2 {
+      font-size: 1.5rem;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 1.5rem;
+    }
+    
+    h3 {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+    
     input, select, button {
       width: 100%;
       padding: 12px;
-      margin: 10px 0;
-      border: 1px solid #ddd;
-      border-radius: 5px;
+      margin: 8px 0;
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
       font-size: 16px;
       box-sizing: border-box;
+      transition: var(--transition);
     }
+    
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    }
+    
     button {
-      background-color: #3498db;
       color: white;
       border: none;
       cursor: pointer;
       font-weight: bold;
-      transition: background-color 0.3s;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
+    
     button:hover {
-      background-color: #2980b9;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
-    button.danger {
-      background-color: #e74c3c;
+    
+    button:active {
+      transform: translateY(0);
     }
-    button.danger:hover {
-      background-color: #c0392b;
+    
+    .btn-primary {
+      background-color: var(--primary-color);
     }
-    button.success {
-      background-color: #2ecc71;
+    
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
     }
-    button.success:hover {
-      background-color: #27ae60;
+    
+    .btn-danger {
+      background-color: var(--danger-color);
     }
+    
+    .btn-danger:hover {
+      background-color: var(--danger-hover);
+    }
+    
+    .btn-success {
+      background-color: var(--success-color);
+    }
+    
+    .btn-success:hover {
+      background-color: var(--success-hover);
+    }
+    
+    .btn-warning {
+      background-color: var(--warning-color);
+    }
+    
+    .btn-warning:hover {
+      background-color: var(--warning-hover);
+    }
+    
+    .btn-sm {
+      padding: 8px 12px;
+      font-size: 14px;
+      width: auto;
+    }
+    
+    .btn-block {
+      display: block;
+      width: 100%;
+    }
+    
     .message {
       padding: 15px;
       margin: 15px 0;
-      border-radius: 5px;
+      border-radius: var(--border-radius);
       display: none;
     }
+    
     .success {
       background-color: #d5f5e3;
-      color: #27ae60;
-      border-left: 4px solid #27ae60;
+      color: var(--success-color);
+      border-left: 4px solid var(--success-color);
     }
+    
     .error {
       background-color: #fadbd8;
-      color: #e74c3c;
-      border-left: 4px solid #e74c3c;
+      color: var(--danger-color);
+      border-left: 4px solid var(--danger-color);
     }
+    
+    .warning {
+      background-color: #fef5e7;
+      color: var(--warning-color);
+      border-left: 4px solid var(--warning-color);
+    }
+    
     table {
       width: 100%;
       border-collapse: collapse;
       margin: 20px 0;
       background: white;
       box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+      border-radius: var(--border-radius);
+      overflow: hidden;
     }
+    
     th, td {
       padding: 12px 15px;
       text-align: left;
-      border-bottom: 1px solid #ddd;
+      border-bottom: 1px solid var(--border-color);
     }
+    
     th {
-      background-color: #3498db;
+      background-color: var(--primary-color);
       color: white;
       font-weight: bold;
     }
+    
     tr:hover {
-      background-color: #f5f5f5;
+      background-color: var(--medium-gray);
     }
+    
     .action-buttons {
       display: flex;
-      gap: 5px;
+      gap: 8px;
+      flex-wrap: wrap;
     }
-    .action-buttons button {
-      padding: 8px 12px;
-      font-size: 14px;
-    }
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0,0,0,0.5);
-    }
-    .modal-content {
-      background-color: white;
-      margin: 10% auto;
-      padding: 20px;
-      border-radius: 8px;
-      width: 50%;
-      max-width: 500px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    }
-    .close {
-      color: #aaa;
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .close:hover {
-      color: black;
-    }
+    
     .user-type-admin {
-      color: #e67e22;
+      color: var(--admin-color);
       font-weight: bold;
     }
+    
     .user-type-superadmin {
-      color: #9b59b6;
+      color: var(--superadmin-color);
       font-weight: bold;
     }
+    
     .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 20px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #eee;
+      padding-bottom: 15px;
+      border-bottom: 1px solid var(--border-color);
+      background-color: white;
+      padding: 20px;
+      box-shadow: var(--shadow);
+      border-radius: var(--border-radius);
+      margin-bottom: 20px;
     }
-    .logout-btn {
-      width: auto;
-      padding: 8px 15px;
+    
+    .header-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+    }
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: var(--primary-color);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+    
+    .welcome-message {
+      font-weight: bold;
+      color: var(--text-color);
+    }
+    
+    /* Dashboard layout */
+    .dashboard-container {
+      display: flex;
+      min-height: calc(100vh - 120px);
+      gap: 20px;
+    }
+    
+    .user-form-container {
+      width: 400px;
+      padding: 20px;
+      background-color: white;
+      box-shadow: var(--shadow);
+      border-radius: var(--border-radius);
+      position: relative;
+    }
+    
+    .users-list {
+      flex: 1;
+      padding: 20px;
+      background-color: white;
+      box-shadow: var(--shadow);
+      border-radius: var(--border-radius);
+      overflow-x: auto;
+    }
+    
+    .form-title {
+      margin-top: 0;
+      color: var(--text-color);
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+    
+    .input-error {
+      border-color: var(--danger-color);
+    }
+    
+    .error-message {
+      color: var(--danger-color);
+      font-size: 0.85rem;
+      margin-top: 5px;
+      display: none;
+    }
+    
+    /* Responsive styles */
+    @media (max-width: 992px) {
+      .dashboard-container {
+        flex-direction: column;
+      }
+      
+      .user-form-container {
+        width: 100%;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .auth-container {
+        margin: 20px auto;
+        padding: 20px;
+      }
+      
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+      }
+      
+      .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+      }
+      
+      .user-info {
+        width: 100%;
+        justify-content: space-between;
+      }
+      
+      table {
+        display: block;
+        overflow-x: auto;
+      }
+      
+      .action-buttons {
+        flex-direction: column;
+        gap: 5px;
+      }
+      
+      .action-buttons button {
+        width: 100%;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .auth-container {
+        padding: 15px;
+      }
+      
+      .form-actions {
+        flex-direction: column;
+      }
+      
+      .form-actions button {
+        width: 100%;
+      }
+    }
+    
+    /* Loading spinner */
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* Card styles */
+    .card {
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #7f8c8d;
+    }
+    
+    .empty-state i {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      color: #bdc3c7;
+    }
+    
+    /* Modal overlay */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      display: none;
+    }
+    
+    .modal {
+      background-color: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      width: 90%;
+      max-width: 500px;
+      padding: 25px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #7f8c8d;
+    }
+    
+    /* Utility classes */
+    .text-center {
+      text-align: center;
+    }
+    
+    .text-right {
+      text-align: right;
+    }
+    
+    .mt-0 { margin-top: 0; }
+    .mt-1 { margin-top: 0.5rem; }
+    .mt-2 { margin-top: 1rem; }
+    .mt-3 { margin-top: 1.5rem; }
+    .mt-4 { margin-top: 2rem; }
+    
+    .mb-0 { margin-bottom: 0; }
+    .mb-1 { margin-bottom: 0.5rem; }
+    .mb-2 { margin-bottom: 1rem; }
+    .mb-3 { margin-bottom: 1.5rem; }
+    .mb-4 { margin-bottom: 2rem; }
+    
+    .d-none {
+      display: none !important;
+    }
+    
+    .d-flex {
+      display: flex !important;
     }
   </style>
 </head>
@@ -165,27 +506,43 @@
   <div id="authSection" class="auth-container">
     <div id="loginForm">
       <h1>Iniciar Sesión</h1>
-      <input type="number" id="loginIdentificacion" placeholder="Identificación" required>
-      <input type="password" id="loginPassword" placeholder="Contraseña" required>
-      <button id="loginBtn">Ingresar</button>
-      <p>¿No tienes cuenta? <a href="#" id="showRegister">Regístrate aquí</a></p>
+      <div class="form-group">
+        <input type="number" id="loginIdentificacion" placeholder="Identificación" required>
+      </div>
+      <div class="form-group">
+        <input type="password" id="loginPassword" placeholder="Contraseña" required>
+      </div>
+      <button id="loginBtn" class="btn-primary btn-block">Ingresar</button>
+      <p class="text-center mt-2">¿No tienes cuenta? <a href="#" id="showRegister">Regístrate aquí</a></p>
       <div id="loginMessage" class="message"></div>
     </div>
 
-    <div id="registerForm" style="display: none;">
+    <div id="registerForm" class="d-none">
       <h1>Registro</h1>
-      <input type="number" id="regIdentificacion" placeholder="Identificación" required>
-      <input type="text" id="regNombre" placeholder="Nombre completo" required>
-      <input type="email" id="regEmail" placeholder="Email" required>
-      <input type="password" id="regPassword" placeholder="Contraseña" required>
-      <select id="regTipoUsuario" required>
-        <option value="">Selecciona tipo de usuario</option>
-        <option value="normal">Usuario Normal</option>
-        <option value="admin">Administrador</option>
-        <option value="superadmin">Super Administrador</option>
-      </select>
-      <button type="button" id="registerBtn">Registrarse</button>
-      <p>¿Ya tienes cuenta? <a href="#" id="showLogin">Inicia sesión aquí</a></p>
+      <div class="form-group">
+        <input type="number" id="regIdentificacion" placeholder="Identificación" required>
+      </div>
+      <div class="form-group">
+        <input type="text" id="regNombre" placeholder="Nombre completo" required>
+        <div class="error-message" id="regNombreError">El nombre solo debe contener letras y espacios.</div>
+      </div>
+      <div class="form-group">
+        <input type="email" id="regEmail" placeholder="Email" required>
+        <div class="error-message" id="regEmailError">Por favor ingresa un correo electrónico válido.</div>
+      </div>
+      <div class="form-group">
+        <input type="password" id="regPassword" placeholder="Contraseña" required>
+      </div>
+      <div class="form-group">
+        <select id="regTipoUsuario" required>
+          <option value="">Selecciona tipo de usuario</option>
+          <option value="normal">Usuario Normal</option>
+          <option value="admin">Administrador</option>
+          <option value="superadmin">Super Administrador</option>
+        </select>
+      </div>
+      <button type="button" id="registerBtn" class="btn-success btn-block">Registrarse</button>
+      <p class="text-center mt-2">¿Ya tienes cuenta? <a href="#" id="showLogin">Inicia sesión aquí</a></p>
       <div id="registerMessage" class="message"></div>
     </div>
   </div>
@@ -193,50 +550,97 @@
   <!-- Dashboard Section -->
   <div id="dashboard" class="dashboard">
     <div class="header">
-      <h1>Panel de Gestión de Usuarios</h1>
-      <button id="logoutBtn" class="logout-btn">Cerrar Sesión</button>
+      <div class="header-content">
+        <h1>Panel de Gestión de Usuarios</h1>
+        <div class="user-info">
+          <div class="user-avatar" id="userAvatar"></div>
+          <span id="welcomeMessage" class="welcome-message"></span>
+          <button id="logoutBtn" class="btn-danger btn-sm">Cerrar Sesión</button>
+        </div>
+      </div>
     </div>
     
-    <div id="userManagement">
-      <h2>Lista de Usuarios</h2>
-      <button id="addUserBtn" class="success">Agregar Nuevo Usuario</button>
-      <div id="usersMessage" class="message"></div>
-      <table id="usersTable">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Identificación</th>
-            <th>Nombre Completo</th>
-            <th>Email</th>
-            <th>Tipo de Usuario</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody id="usersTableBody">
-          <!-- Users will be loaded here -->
-        </tbody>
-      </table>
+    <div class="container">
+      <div class="dashboard-container">
+        <div class="user-form-container">
+          <h2 class="form-title" id="formTitle">Agregar Nuevo Usuario</h2>
+          <input type="hidden" id="editUserId">
+          <div class="form-group">
+            <label for="modalIdentificacion">Identificación</label>
+            <input type="number" id="modalIdentificacion" placeholder="Identificación" required>
+          </div>
+          <div class="form-group">
+            <label for="modalNombre">Nombre completo</label>
+            <input type="text" id="modalNombre" placeholder="Nombre completo" required>
+            <div class="error-message" id="modalNombreError">El nombre solo debe contener letras y espacios.</div>
+          </div>
+          <div class="form-group">
+            <label for="modalEmail">Email</label>
+            <input type="email" id="modalEmail" placeholder="Email" required>
+            <div class="error-message" id="modalEmailError">Por favor ingresa un correo electrónico válido.</div>
+          </div>
+          <div class="form-group">
+            <label for="modalPassword">Contraseña</label>
+            <input type="password" id="modalPassword" placeholder="Contraseña (dejar en blanco para no cambiar)">
+          </div>
+          <div class="form-group">
+            <label for="modalTipoUsuario">Tipo de Usuario</label>
+            <select id="modalTipoUsuario" required>
+              <option value="">Selecciona tipo de usuario</option>
+              <option value="normal">Usuario Normal</option>
+              <option value="admin">Administrador</option>
+              <option value="superadmin">Super Administrador</option>
+            </select>
+          </div>
+          <div class="form-actions" id="formActions">
+            <button type="button" id="saveUserBtn" class="btn-success">Guardar Usuario</button>
+            <button type="button" id="cancelEditBtn" class="btn-warning d-none">Cancelar</button>
+          </div>
+          <div id="modalMessage" class="message"></div>
+        </div>
+        
+        <div class="users-list">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="mb-0">Lista de Usuarios</h2>
+          </div>
+          <div id="usersMessage" class="message"></div>
+          <table id="usersTable">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Identificación</th>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Tipo</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="usersTableBody">
+              <!-- Users will be loaded here -->
+            </tbody>
+          </table>
+          <div id="emptyState" class="empty-state d-none">
+            <i class="fas fa-users"></i>
+            <h3>No hay usuarios registrados</h3>
+            <p>Comienza agregando un nuevo usuario.</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- Add/Edit User Modal -->
-  <div id="userModal" class="modal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <h2 id="modalTitle">Agregar Nuevo Usuario</h2>
-      <input type="hidden" id="editUserId">
-      <input type="number" id="modalIdentificacion" placeholder="Identificación" required>
-      <input type="text" id="modalNombre" placeholder="Nombre completo" required>
-      <input type="email" id="modalEmail" placeholder="Email" required>
-      <input type="password" id="modalPassword" placeholder="Contraseña (dejar en blanco para no cambiar)">
-      <select id="modalTipoUsuario" required>
-        <option value="">Selecciona tipo de usuario</option>
-        <option value="normal">Usuario Normal</option>
-        <option value="admin">Administrador</option>
-        <option value="superadmin">Super Administrador</option>
-      </select>
-      <button type="button" id="saveUserBtn" class="success">Guardar Usuario</button>
-      <div id="modalMessage" class="message"></div>
+  <!-- Delete Confirmation Modal -->
+  <div class="modal-overlay" id="deleteModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="mt-0">Confirmar Eliminación</h3>
+        <button class="modal-close" id="closeDeleteModal">&times;</button>
+      </div>
+      <p>¿Estás seguro de que deseas eliminar este usuario? Esta acción no se puede deshacer.</p>
+      <div class="form-actions mt-3">
+        <button id="confirmDeleteBtn" class="btn-danger">Eliminar</button>
+        <button id="cancelDeleteBtn" class="btn-primary">Cancelar</button>
+      </div>
     </div>
   </div>
 
@@ -253,14 +657,48 @@
     const loginMessage = document.getElementById('loginMessage');
     const registerMessage = document.getElementById('registerMessage');
     const usersTableBody = document.getElementById('usersTableBody');
-    const userModal = document.getElementById('userModal');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalMessage = document.getElementById('modalMessage');
     const usersMessage = document.getElementById('usersMessage');
+    const modalMessage = document.getElementById('modalMessage');
+    const welcomeMessage = document.getElementById('welcomeMessage');
+    const userAvatar = document.getElementById('userAvatar');
+    const formTitle = document.getElementById('formTitle');
+    const cancelEditBtn = document.getElementById('cancelEditBtn');
+    const emptyState = document.getElementById('emptyState');
+    const deleteModal = document.getElementById('deleteModal');
+    const closeDeleteModal = document.getElementById('closeDeleteModal');
+    const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+    
+    // Form validation elements
+    const regNombreError = document.getElementById('regNombreError');
+    const regEmailError = document.getElementById('regEmailError');
+    const modalNombreError = document.getElementById('modalNombreError');
+    const modalEmailError = document.getElementById('modalEmailError');
     
     // Current user info
     let currentUser = null;
-
+    let userToDelete = null;
+    
+    // Form validation functions
+    function validateName(name) {
+      return /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(name);
+    }
+    
+    function validateEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+    
+    function showError(inputElement, errorElement, message) {
+      inputElement.classList.add('input-error');
+      errorElement.textContent = message;
+      errorElement.style.display = 'block';
+    }
+    
+    function hideError(inputElement, errorElement) {
+      inputElement.classList.remove('input-error');
+      errorElement.style.display = 'none';
+    }
+    
     // Initialize the application
     document.addEventListener('DOMContentLoaded', () => {
       // Check if user is already logged in
@@ -270,25 +708,68 @@
         showDashboard();
         loadUsers();
       }
+      
+      // Setup event listeners for validation
+      document.getElementById('regNombre').addEventListener('input', (e) => {
+        if (!validateName(e.target.value)) {
+          showError(e.target, regNombreError, 'El nombre solo debe contener letras y espacios.');
+        } else {
+          hideError(e.target, regNombreError);
+        }
+      });
+      
+      document.getElementById('regEmail').addEventListener('input', (e) => {
+        if (!validateEmail(e.target.value)) {
+          showError(e.target, regEmailError, 'Por favor ingresa un correo electrónico válido.');
+        } else {
+          hideError(e.target, regEmailError);
+        }
+      });
+      
+      document.getElementById('modalNombre').addEventListener('input', (e) => {
+        if (!validateName(e.target.value)) {
+          showError(e.target, modalNombreError, 'El nombre solo debe contener letras y espacios.');
+        } else {
+          hideError(e.target, modalNombreError);
+        }
+      });
+      
+      document.getElementById('modalEmail').addEventListener('input', (e) => {
+        if (!validateEmail(e.target.value)) {
+          showError(e.target, modalEmailError, 'Por favor ingresa un correo electrónico válido.');
+        } else {
+          hideError(e.target, modalEmailError);
+        }
+      });
     });
 
     // Auth form toggling
     document.getElementById('showRegister').addEventListener('click', (e) => {
       e.preventDefault();
-      loginForm.style.display = 'none';
-      registerForm.style.display = 'block';
+      loginForm.classList.add('d-none');
+      registerForm.classList.remove('d-none');
     });
 
     document.getElementById('showLogin').addEventListener('click', (e) => {
       e.preventDefault();
-      registerForm.style.display = 'none';
-      loginForm.style.display = 'block';
+      registerForm.classList.add('d-none');
+      loginForm.classList.remove('d-none');
     });
 
     // Login function
     document.getElementById('loginBtn').addEventListener('click', async () => {
       const identificacion = document.getElementById('loginIdentificacion').value;
       const password = document.getElementById('loginPassword').value;
+
+      if (!identificacion || !password) {
+        showMessage(loginMessage, 'Por favor completa todos los campos.', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('loginBtn');
+      const originalText = btn.textContent;
+      btn.innerHTML = '<span class="spinner"></span> Ingresando...';
+      btn.disabled = true;
 
       try {
         const user = await getUserDataByIdentification(identificacion);
@@ -303,63 +784,72 @@
         }
       } catch (error) {
         showMessage(loginMessage, error.message, 'error');
+      } finally {
+        btn.textContent = originalText;
+        btn.disabled = false;
       }
     });
 
     // Register function
-  document.getElementById('registerBtn').addEventListener('click', async () => {
-  const identificacion = document.getElementById('regIdentificacion').value.trim();
-  const nombre = document.getElementById('regNombre').value.trim();
-  const email = document.getElementById('regEmail').value.trim();
-  const password = document.getElementById('regPassword').value.trim();
-  const tipoUsuario = document.getElementById('regTipoUsuario').value;
+    document.getElementById('registerBtn').addEventListener('click', async () => {
+      const identificacion = document.getElementById('regIdentificacion').value.trim();
+      const nombre = document.getElementById('regNombre').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const password = document.getElementById('regPassword').value.trim();
+      const tipoUsuario = document.getElementById('regTipoUsuario').value;
 
-  // Validaciones
-  const nombreValido = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(nombre);
-  const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      // Validate all fields
+      if (!identificacion || !nombre || !email || !password || !tipoUsuario) {
+        showMessage(registerMessage, 'Todos los campos son obligatorios.', 'error');
+        return;
+      }
 
-  if (!nombreValido) {
-    showMessage(registerMessage, 'El nombre solo debe contener letras y espacios.', 'error');
-    return;
-  }
+      // Validate name and email format
+      if (!validateName(nombre)) {
+        showError(document.getElementById('regNombre'), regNombreError, 'El nombre solo debe contener letras y espacios.');
+        return;
+      }
 
-  if (!emailValido) {
-    showMessage(registerMessage, 'Por favor ingresa un correo electrónico válido.', 'error');
-    return;
-  }
+      if (!validateEmail(email)) {
+        showError(document.getElementById('regEmail'), regEmailError, 'Por favor ingresa un correo electrónico válido.');
+        return;
+      }
 
-  if (!identificacion || !nombre || !email || !password || !tipoUsuario) {
-    showMessage(registerMessage, 'Todos los campos son obligatorios.', 'error');
-    return;
-  }
+      const btn = document.getElementById('registerBtn');
+      const originalText = btn.textContent;
+      btn.innerHTML = '<span class="spinner"></span> Registrando...';
+      btn.disabled = true;
 
-  const userData = {
-    identificacion,
-    nombre_usuario: nombre,
-    email,
-    clave_encriptada: password,
-    usuario_normal: tipoUsuario === 'normal' ? 1 : 0,
-    usuario_administrador: tipoUsuario === 'admin' ? 1 : 0,
-    usuario_superadministrador: tipoUsuario === 'superadmin' ? 1 : 0
-  };
+      const userData = {
+        identificacion,
+        nombre_usuario: nombre,
+        email,
+        clave_encriptada: password,
+        usuario_normal: tipoUsuario === 'normal' ? 1 : 0,
+        usuario_administrador: tipoUsuario === 'admin' ? 1 : 0,
+        usuario_superadministrador: tipoUsuario === 'superadmin' ? 1 : 0
+      };
 
-  try {
-    const newUser = await registerUser(userData);
-    showMessage(registerMessage, '¡Registro exitoso! Ahora puedes iniciar sesión.', 'success');
+      try {
+        const newUser = await registerUser(userData);
+        showMessage(registerMessage, '¡Registro exitoso! Ahora puedes iniciar sesión.', 'success');
 
-    // Limpiar campos
-    document.getElementById('regIdentificacion').value = '';
-    document.getElementById('regNombre').value = '';
-    document.getElementById('regEmail').value = '';
-    document.getElementById('regPassword').value = '';
-    document.getElementById('regTipoUsuario').value = '';
+        // Clear fields
+        document.getElementById('regIdentificacion').value = '';
+        document.getElementById('regNombre').value = '';
+        document.getElementById('regEmail').value = '';
+        document.getElementById('regPassword').value = '';
+        document.getElementById('regTipoUsuario').value = '';
 
-    registerForm.style.display = 'none';
-    loginForm.style.display = 'block';
-  } catch (error) {
-    showMessage(registerMessage, error.message, 'error');
-  }
-});
+        registerForm.classList.add('d-none');
+        loginForm.classList.remove('d-none');
+      } catch (error) {
+        showMessage(registerMessage, error.message, 'error');
+      } finally {
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }
+    });
 
     // Logout function
     document.getElementById('logoutBtn').addEventListener('click', () => {
@@ -367,8 +857,8 @@
       localStorage.removeItem('currentUser');
       dashboard.style.display = 'none';
       authSection.style.display = 'block';
-      loginForm.style.display = 'block';
-      registerForm.style.display = 'none';
+      loginForm.classList.remove('d-none');
+      registerForm.classList.add('d-none');
       document.getElementById('loginForm').reset();
     });
 
@@ -377,42 +867,68 @@
       try {
         const users = await getAllUsers();
         renderUsersTable(users);
+        
+        // Show empty state if no users
+        if (users.length === 0) {
+          emptyState.classList.remove('d-none');
+          usersTableBody.classList.add('d-none');
+        } else {
+          emptyState.classList.add('d-none');
+          usersTableBody.classList.remove('d-none');
+        }
       } catch (error) {
         showMessage(usersMessage, error.message, 'error');
       }
     }
 
-    // Add new user button
-    document.getElementById('addUserBtn').addEventListener('click', () => {
-      showUserModal();
-    });
-
-    // Modal handling
-    document.querySelector('.close').addEventListener('click', () => {
-      userModal.style.display = 'none';
-    });
-
-    window.addEventListener('click', (event) => {
-      if (event.target === userModal) {
-        userModal.style.display = 'none';
-      }
-    });
-
     // Save user (add/edit)
     document.getElementById('saveUserBtn').addEventListener('click', async () => {
       const userId = document.getElementById('editUserId').value;
+      const identificacion = document.getElementById('modalIdentificacion').value.trim();
+      const nombre = document.getElementById('modalNombre').value.trim();
+      const email = document.getElementById('modalEmail').value.trim();
+      const tipoUsuario = document.getElementById('modalTipoUsuario').value;
+      const password = document.getElementById('modalPassword').value.trim();
+
+      // Validate all fields
+      if (!identificacion || !nombre || !email || !tipoUsuario) {
+        showMessage(modalMessage, 'Todos los campos son obligatorios.', 'error');
+        return;
+      }
+
+      // Validate name and email format
+      if (!validateName(nombre)) {
+        showError(document.getElementById('modalNombre'), modalNombreError, 'El nombre solo debe contener letras y espacios.');
+        return;
+      }
+
+      if (!validateEmail(email)) {
+        showError(document.getElementById('modalEmail'), modalEmailError, 'Por favor ingresa un correo electrónico válido.');
+        return;
+      }
+
+      // For new users, password is required
+      if (!userId && !password) {
+        showMessage(modalMessage, 'La contraseña es obligatoria para nuevos usuarios.', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('saveUserBtn');
+      const originalText = btn.textContent;
+      btn.innerHTML = '<span class="spinner"></span> Guardando...';
+      btn.disabled = true;
+
       const userData = {
-        identificacion: document.getElementById('modalIdentificacion').value,
-        nombre_usuario: document.getElementById('modalNombre').value,
-        email: document.getElementById('modalEmail').value,
-        usuario_normal: document.getElementById('modalTipoUsuario').value === 'normal' ? 1 : 0,
-        usuario_administrador: document.getElementById('modalTipoUsuario').value === 'admin' ? 1 : 0,
-        usuario_superadministrador: document.getElementById('modalTipoUsuario').value === 'superadmin' ? 1 : 0
+        identificacion,
+        nombre_usuario: nombre,
+        email,
+        usuario_normal: tipoUsuario === 'normal' ? 1 : 0,
+        usuario_administrador: tipoUsuario === 'admin' ? 1 : 0,
+        usuario_superadministrador: tipoUsuario === 'superadmin' ? 1 : 0
       };
 
       // Only include password if it's being changed (edit) or for new users
-      const password = document.getElementById('modalPassword').value;
-      if (password || !userId) {
+      if (password) {
         userData.clave_encriptada = password;
       }
 
@@ -424,33 +940,75 @@
           await registerUser(userData);
           showMessage(usersMessage, 'Usuario creado correctamente', 'success');
         }
-        userModal.style.display = 'none';
+        resetForm();
         loadUsers();
       } catch (error) {
         showMessage(modalMessage, error.message, 'error');
+      } finally {
+        btn.textContent = originalText;
+        btn.disabled = false;
       }
     });
 
-    // Helper function to show user modal for editing
-    function showUserModal(user = null) {
-      document.getElementById('modalTitle').textContent = user ? 'Editar Usuario' : 'Agregar Nuevo Usuario';
-      document.getElementById('editUserId').value = user ? user.id_usuario : '';
-      document.getElementById('modalIdentificacion').value = user ? user.identificacion : '';
-      document.getElementById('modalNombre').value = user ? user.nombre_usuario : '';
-      document.getElementById('modalEmail').value = user ? user.email : '';
-      document.getElementById('modalPassword').value = '';
-      
-      // Set user type
-      const typeSelect = document.getElementById('modalTipoUsuario');
-      typeSelect.value = '';
-      if (user) {
-        if (user.usuario_superadministrador) typeSelect.value = 'superadmin';
-        else if (user.usuario_administrador) typeSelect.value = 'admin';
-        else if (user.usuario_normal) typeSelect.value = 'normal';
+    // Cancel edit button
+    cancelEditBtn.addEventListener('click', () => {
+      resetForm();
+    });
+
+    // Delete modal handlers
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('delete-btn')) {
+        e.preventDefault();
+        userToDelete = e.target.getAttribute('data-id');
+        deleteModal.style.display = 'flex';
       }
+    });
+
+    closeDeleteModal.addEventListener('click', () => {
+      deleteModal.style.display = 'none';
+    });
+
+    cancelDeleteBtn.addEventListener('click', () => {
+      deleteModal.style.display = 'none';
+    });
+
+    confirmDeleteBtn.addEventListener('click', async () => {
+      if (!userToDelete) return;
       
-      modalMessage.style.display = 'none';
-      userModal.style.display = 'block';
+      const btn = document.getElementById('confirmDeleteBtn');
+      const originalText = btn.textContent;
+      btn.innerHTML = '<span class="spinner"></span> Eliminando...';
+      btn.disabled = true;
+
+      try {
+        await deleteUser(userToDelete);
+        showMessage(usersMessage, 'Usuario eliminado correctamente', 'success');
+        loadUsers();
+        deleteModal.style.display = 'none';
+      } catch (error) {
+        showMessage(usersMessage, error.message, 'error');
+      } finally {
+        btn.textContent = originalText;
+        btn.disabled = false;
+        userToDelete = null;
+      }
+    });
+
+    // Helper function to reset the form
+    function resetForm() {
+      document.getElementById('editUserId').value = '';
+      document.getElementById('modalIdentificacion').value = '';
+      document.getElementById('modalNombre').value = '';
+      document.getElementById('modalEmail').value = '';
+      document.getElementById('modalPassword').value = '';
+      document.getElementById('modalTipoUsuario').value = '';
+      formTitle.textContent = 'Agregar Nuevo Usuario';
+      document.getElementById('saveUserBtn').textContent = 'Guardar Usuario';
+      cancelEditBtn.classList.add('d-none');
+      
+      // Clear validation errors
+      hideError(document.getElementById('modalNombre'), modalNombreError);
+      hideError(document.getElementById('modalEmail'), modalEmailError);
     }
 
     // Render users table
@@ -478,41 +1036,47 @@
           <td>${user.email}</td>
           <td class="${typeClass}">${userType}</td>
           <td class="action-buttons">
-            <button class="edit-btn" data-id="${user.id_usuario}">Editar</button>
-            <button class="danger delete-btn" data-id="${user.id_usuario}">Eliminar</button>
+            <button class="edit-btn btn-primary btn-sm" data-id="${user.id_usuario}">Editar</button>
+            <button class="delete-btn btn-danger btn-sm" data-id="${user.id_usuario}">Eliminar</button>
           </td>
         `;
         
         usersTableBody.appendChild(row);
       });
       
-      // Add event listeners to edit and delete buttons
+      // Add event listeners to edit buttons
       document.querySelectorAll('.edit-btn').forEach(btn => {
         btn.addEventListener('click', async (e) => {
           const userId = e.target.getAttribute('data-id');
           try {
             const user = await getUserById(userId);
-            showUserModal(user);
+            populateFormForEdit(user);
           } catch (error) {
             showMessage(usersMessage, error.message, 'error');
           }
         });
       });
+    }
+
+    // Populate form for editing
+    function populateFormForEdit(user) {
+      document.getElementById('editUserId').value = user.id_usuario;
+      document.getElementById('modalIdentificacion').value = user.identificacion;
+      document.getElementById('modalNombre').value = user.nombre_usuario;
+      document.getElementById('modalEmail').value = user.email;
+      document.getElementById('modalPassword').value = '';
       
-      document.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.addEventListener('click', async (e) => {
-          if (confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
-            const userId = e.target.getAttribute('data-id');
-            try {
-              await deleteUser(userId);
-              showMessage(usersMessage, 'Usuario eliminado correctamente', 'success');
-              loadUsers();
-            } catch (error) {
-              showMessage(usersMessage, error.message, 'error');
-            }
-          }
-        });
-      });
+      // Set user type
+      const typeSelect = document.getElementById('modalTipoUsuario');
+      typeSelect.value = '';
+      if (user.usuario_superadministrador) typeSelect.value = 'superadmin';
+      else if (user.usuario_administrador) typeSelect.value = 'admin';
+      else if (user.usuario_normal) typeSelect.value = 'normal';
+      
+      // Update form title and buttons
+      formTitle.textContent = 'Editar Usuario';
+      document.getElementById('saveUserBtn').textContent = 'Actualizar Usuario';
+      cancelEditBtn.classList.remove('d-none');
     }
 
     // Show dashboard
@@ -520,6 +1084,17 @@
       authSection.style.display = 'none';
       dashboard.style.display = 'block';
       document.title = `Panel de Usuario - ${currentUser.nombre_usuario}`;
+      welcomeMessage.textContent = currentUser.nombre_usuario;
+      
+      // Set user avatar initials
+      const initials = currentUser.nombre_usuario.split(' ')
+        .map(name => name[0])
+        .join('')
+        .toUpperCase()
+        .substring(0, 2);
+      userAvatar.textContent = initials;
+      
+      resetForm();
     }
 
     // Show message

@@ -1,36 +1,51 @@
-# ⚙️ Sistema de Gestión de Usuarios con Supabase
+# 🔐 User Management System with Supabase
 
-Una solución completa para la gestión de usuarios que implementa autenticación basada en número de identificación y control de acceso basado en roles, todo impulsado por la potencia de Supabase.
+![System Preview](./preview.png) <!-- Add a screenshot if available -->
 
-## ✨ Características Principales
+A robust, full-featured user management system with secure authentication, role-based access control, and complete CRUD functionality, powered by Supabase's backend services.
 
-* **🔑 Autenticación Segura por ID:** Permite a los usuarios iniciar sesión utilizando su número de identificación, eliminando la necesidad de correos electrónicos.
-* **<0xF0><0x9F><0x91><0xA6> Operaciones CRUD de Usuarios:** Funcionalidades completas para Crear, Leer, Actualizar y Eliminar usuarios dentro del sistema.
-* **🛡️ Control de Acceso Basado en Roles:** Implementa tres roles de usuario distintos: Normal, Administrador y Super Administrador, cada uno con sus propios permisos.
-* **📱 Diseño Responsivo:** La interfaz de usuario se adapta perfectamente a diferentes tamaños de pantalla, ofreciendo una experiencia consistente en dispositivos móviles y de escritorio.
-* **🔄 Persistencia de Sesión:** Mantiene las sesiones de usuario activas utilizando `localStorage` para una experiencia fluida.
-* **⚡ Integración Directa con la API REST de Supabase:** Aprovecha la velocidad y eficiencia de la API REST de Supabase para todas las operaciones de la base de datos.
+## 🌟 Key Features
 
-## 🚀 Inicio Rápido
+- **Secure Authentication**  
+  🔐 Unique identification-based login system  
+  📝 Registration with comprehensive validation  
+  🔄 Automatic session persistence
 
-Sigue estos sencillos pasos para poner en marcha el sistema:
+- **User Management**  
+  👥 Three-tier role system (User/Admin/Super Admin)  
+  ➕ Create new user accounts  
+  ✏️ Edit existing user information  
+  🗑️ Delete users with confirmation  
 
-1.  **Clona el repositorio:**
-    ```bash
-    git clone [https://github.com/yourusername/user-management-system.git](https://github.com/yourusername/user-management-system.git)
-    cd user-management-system
-    ```
-2.  **Abre `index.html` en tu navegador:** Simplemente haz doble clic en el archivo o utiliza un servidor local como Live Server para visualizar la aplicación.
+- **Technical Excellence**  
+  ⚡ Direct Supabase REST API integration  
+  📱 Fully responsive design  
+  🛡️ Client-side input validation  
+  ⏳ Loading indicators for async operations
 
-### 🛠️ Configuración de Supabase
+## 🚀 Quick Start
 
-Asegúrate de configurar tu proyecto de Supabase correctamente siguiendo estos pasos:
+### Prerequisites
+- Modern web browser (Chrome, Firefox, Edge recommended)
+- Supabase account ([sign up for free](https://supabase.com/))
 
-#### 💾 Creación de la Tabla de Usuarios
+### Installation
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/ChrisBaroneYT/user-management-system.git
+   cd user-management-system
+   ```
 
-Ejecuta la siguiente consulta SQL en el editor de SQL de tu proyecto de Supabase para crear la tabla `usuarios`:
+2. Launch the application:
+   Simple method: Double-click index.html
+   Recommended method: Use a local server like VS Code Live Server
 
-```sql
+### ⚙️ Backend Configuration
+Database Setup
+Execute this SQL in your Supabase SQL editor:
+
+sql
+Copy
 CREATE TABLE usuarios (
   id_usuario SERIAL PRIMARY KEY,
   identificacion BIGINT UNIQUE NOT NULL,
@@ -41,40 +56,102 @@ CREATE TABLE usuarios (
   usuario_administrador BOOLEAN DEFAULT FALSE,
   usuario_superadministrador BOOLEAN DEFAULT FALSE
 );
-🔒 Políticas de Seguridad a Nivel de Fila (RLS)
-Habilita y configura las políticas de RLS para proteger tus datos. Un buen punto de partida es permitir el acceso a todos los usuarios autenticados:
-
-SQL
-
+Security Configuration
+sql
+Copy
+-- Enable Row-Level Security
 ALTER TABLE usuarios ENABLE ROW LEVEL SECURITY;
 
+-- Basic access policy
 CREATE POLICY "Enable access for authenticated users"
 ON usuarios FOR ALL
 TO authenticated
 USING (true);
-Nota: Es posible que necesites políticas más granular para controlar quién puede crear, leer, actualizar y eliminar usuarios, dependiendo de los roles implementados.
+Important: For production environments, implement more restrictive security policies tailored to your requirements.
 
-⚙️ Configuración del Proyecto
-Reemplaza los siguientes valores en el archivo index.html con las credenciales de tu proyecto de Supabase:
+Connect to Your Supabase Project
+Update these values in index.html:
 
-JavaScript
+javascript
+Copy
+const SUPABASE_URL = 'your-project-url';
+const SUPABASE_KEY = 'your-anon-key';
+Find these credentials at:
+Supabase Dashboard → Project Settings → API
 
-const SUPABASE_URL = 'your-supabase-url';
-const SUPABASE_KEY = 'your-supabase-key';
-Puedes encontrar la URL y la clave de tu proyecto en la configuración de tu proyecto de Supabase.
-
-📂 Estructura del Proyecto
+📂 Project Structure
+Copy
 user-management-system/
-├── index.html         # Archivo principal de la aplicación
-├── README.md          # Documentación del proyecto
-└── styles.css         # Archivos de estilos CSS
-🎨 Componentes de la Interfaz de Usuario
-Componente	Descripción
-Pantalla de Autenticación	Formularios de inicio de sesión y registro.
-Panel de Usuario	Interfaz para la gestión de usuarios (CRUD).
-Modales	Ventanas emergentes para agregar y editar usuarios.
-📜 Licencia
-Este proyecto está bajo la Licencia MIT - consulta el archivo LICENSE para obtener más detalles.
+├── index.html          # Main application entry point
+├── README.md           # Project documentation
+└── styles.css          # All CSS styles
+🖥️ System Components
+Component	Description
+Authentication	Secure login/registration with validation
+User Dashboard	Interactive table with sort/filter capabilities
+User Editor	Unified form for adding/editing user records
+Confirmation Dialogs	Safety prompts for destructive actions
+🛡️ Security Implementation
+Validation Rules:
 
+Names: Letters and spaces only
 
-Espero que esto sea lo que necesitabas. ¡Avísame si tienes alguna otra pregunta!
+Emails: Must contain @ and valid domain
+
+Passwords: Required for new users
+
+Access Control:
+
+Normal users: Read-only access
+
+Admins: Can manage normal users
+
+Super Admins: Full system control
+
+🔍 Troubleshooting Guide
+Issue	Solution
+.reset() is not a function	Ensure form elements use <form> tags
+Authentication failures	Verify Supabase credentials and user data
+Missing permissions	Check RLS policies in Supabase
+📜 License
+MIT License - See LICENSE for full details.
+
+🤝 How to Contribute
+Fork the repository
+
+Create a feature branch (git checkout -b feature/your-feature)
+
+Commit your changes (git commit -m 'Add some feature')
+
+Push to the branch (git push origin feature/your-feature)
+
+Open a Pull Request
+
+📬 Contact Information
+Developer: Cristian Sánchez
+Email: co.cristiand@gmail.com
+GitHub: https://github.com/ChrisBaroneYT
+
+For support requests, please include:
+
+Detailed description of the issue
+
+Steps to reproduce
+
+Screenshots if applicable
+
+Copy
+
+Key improvements:
+1. Better visual hierarchy with consistent emoji usage
+2. More detailed feature descriptions
+3. Improved security section
+4. Clearer troubleshooting table
+5. Enhanced contribution guidelines
+6. Professional contact information format
+7. Better organization of technical details
+8. More prominent callouts for important notes
+9. Consistent formatting throughout
+10. Added placeholder for system preview image
+
+The README now presents a more professional image while maintaining all technical details and being easier to navigate.
