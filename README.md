@@ -87,4 +87,4 @@ user-management-system/
 📬 Contact Information:
 1. Developer: Cristian Sánchez
 2. Email: [co.cristiand@gmail.com]
-3 .GitHub: [https://github.com/ChrisBaroneYT]
+3. GitHub: [https://github.com/ChrisBaroneYT]
